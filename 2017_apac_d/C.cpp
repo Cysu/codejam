@@ -29,17 +29,16 @@ void solve() {
     len[i] = w.length();
     for (auto c : w) ++a[i][c - 'a'];
   }
-  vector<vector<int>> f;
+  vector<int> f;
   int count[26];
   while (nQuery--) {
     string s;
     cin >> s;
     int n = s.length();
     f.resize(n);
-    for (int i = 0; i < n; ++i) f[i].resize(m);
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) {
+      f[i] = 0;
       for (int j = 0; j < m; ++j) {
-        f[i][j] = 0;
         if (i+1 < len[j]) continue;
         // check match
         memset(count, 0, sizeof(count));
@@ -51,17 +50,12 @@ void solve() {
           }
         if (!match) continue;
         if (i-len[j] < 0)
-          f[i][j] = (f[i][j] + 1) % M;
-        else {
-          for (int k = 0; k < m; ++k) {
-            f[i][j] = (f[i][j] + f[i-len[j]][k]) % M;
-          }
-        }
+          f[i] = (f[i] + 1) % M;
+        else
+          f[i] = (f[i] + f[i-len[j]]) % M;
       }
-    int ans = 0;
-    for (int j = 0; j < m; ++j)
-      ans = (ans + f[n-1][j]) % M;
-    cout << ans;
+    }
+    cout << f[n-1];
     if (nQuery) cout << " ";
   }
   cout << endl;
